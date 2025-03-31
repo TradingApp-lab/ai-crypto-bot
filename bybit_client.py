@@ -7,7 +7,7 @@ import hashlib
 import requests
 import json
 
-from log_utils import info, error, success  # 🔧 Імпорт логування
+from log_utils import info, error, success, warn  # 🔧 Імпорт логування
 
 
 def get_session():
@@ -18,10 +18,6 @@ def get_session():
     )
 
 def get_usdt_balance():
-    print("📡 Response status:", response.status_code)
-    print("📄 Response headers:", response.headers)
-    print("📄 Raw response:", response.text)
-
     try:
         server_time_resp = requests.get("https://api.bybit.com/v5/market/time")
         server_timestamp = str(server_time_resp.json()["time"])
@@ -45,14 +41,40 @@ def get_usdt_balance():
         }
 
         response = requests.get(f"{url}?{params}", headers=headers)
-        data = response.json()
+
+        print("📡 Response status:", response.status_code)
+        print("📄 Response headers:", response.headers)
+        print("📄 Raw response:", response.text)
+
+        try:
+            data = response.json()
+        except Exception as e:
+            error(f"❌ JSON parse error: {e} | Raw: {response.text}")
+            return None
+
         info(f"🔎 FULL BALANCE RESPONSE: {data}")
 
-        wallet_balance = float(data["result"]["list"][0]["coin"][0]["walletBalance"])
-        return wallet_balance
+        if data.get("retCode") != 0:
+            error(f"❌ API Error: {data.get('retMsg', 'Unknown error')}")
+            return None
+
+        # === Перевірка структури відповіді ===
+        try:
+            coin_list = data["result"]["list"][0]["coin"]
+            for coin_data in coin_list:
+                if coin_data["coin"] == "USDT":
+                    wallet_balance = float(coin_data["walletBalance"])
+                    return wallet_balance
+            warn("⚠️ USDT not found in wallet")
+            return 0.0
+        except (IndexError, KeyError, TypeError) as e:
+            error(f"❌ Unexpected response format: {e}")
+            return None
+
     except Exception as e:
-        error(f"Raw API balance error: {e}")
+        error(f"❌ Raw API balance error: {e}")
         return None
+
 
 def get_market_price(symbol):
     try:
