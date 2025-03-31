@@ -18,6 +18,10 @@ def get_session():
     )
 
 def get_usdt_balance():
+    print("📡 Response status:", response.status_code)
+    print("📄 Response headers:", response.headers)
+    print("📄 Raw response:", response.text)
+
     try:
         server_time_resp = requests.get("https://api.bybit.com/v5/market/time")
         server_timestamp = str(server_time_resp.json()["time"])
