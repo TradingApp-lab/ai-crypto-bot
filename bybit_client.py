@@ -19,10 +19,10 @@ def get_session():
 
 def get_usdt_balance():
     try:
-        server_time_resp = requests.get("https://api-testnet.bybit.com/v5/market/time")
+        server_time_resp = requests.get("https://api.bybit.com/v5/market/time")
         server_timestamp = str(server_time_resp.json()["time"])
 
-        url = "https://api-testnet.bybit.com/v5/account/wallet-balance"
+        url = "https://api.bybit.com/v5/account/wallet-balance"
         recv_window = "5000"
         params = f"accountType=UNIFIED&coin=USDT"
 
@@ -52,7 +52,7 @@ def get_usdt_balance():
 
 def get_market_price(symbol):
     try:
-        url = "https://api-testnet.bybit.com/v5/market/tickers"
+        url = "https://api.bybit.com/v5/market/tickers"
         params = {"category": "linear", "symbol": symbol}
         response = requests.get(url, params=params)
         data = response.json()
@@ -63,10 +63,10 @@ def get_market_price(symbol):
 
 def get_position_info(symbol):
     try:
-        server_time_resp = requests.get("https://api-testnet.bybit.com/v5/market/time")
+        server_time_resp = requests.get("https://api.bybit.com/v5/market/time")
         server_timestamp = str(server_time_resp.json()["time"])
 
-        url = "https://api-testnet.bybit.com/v5/position/list"
+        url = "https://api.bybit.com/v5/position/list"
         recv_window = "5000"
         params = f"category=linear&symbol={symbol}"
 
@@ -95,10 +95,10 @@ def get_position_info(symbol):
 
 def set_leverage(symbol, leverage):
     try:
-        server_time_resp = requests.get("https://api-testnet.bybit.com/v5/market/time")
+        server_time_resp = requests.get("https://api.bybit.com/v5/market/time")
         server_timestamp = str(server_time_resp.json()["time"])
 
-        url = "https://api-testnet.bybit.com/v5/position/set-leverage"
+        url = "https://api.bybit.com/v5/position/set-leverage"
         recv_window = "5000"
 
         body = {
@@ -139,10 +139,10 @@ def set_leverage(symbol, leverage):
 
 def place_order(order_data):
     try:
-        server_time_resp = requests.get("https://api-testnet.bybit.com/v5/market/time")
+        server_time_resp = requests.get("https://api.bybit.com/v5/market/time")
         server_timestamp = str(server_time_resp.json()["time"])
 
-        url = "https://api-testnet.bybit.com/v5/order/create"
+        url = "https://api.bybit.com/v5/order/create"
         recv_window = "5000"
 
         body_str = json.dumps(order_data, separators=(",", ":"))
@@ -176,10 +176,10 @@ def place_order(order_data):
 
 def set_tp_sl(side, take_profit, stop_loss):
     try:
-        server_time_resp = requests.get("https://api-testnet.bybit.com/v5/market/time")
+        server_time_resp = requests.get("https://api.bybit.com/v5/market/time")
         server_timestamp = str(server_time_resp.json()["time"])
 
-        url = "https://api-testnet.bybit.com/v5/position/trading-stop"
+        url = "https://api.bybit.com/v5/position/trading-stop"
         recv_window = "5000"
         body = {
             "category": "linear",
