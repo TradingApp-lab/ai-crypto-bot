@@ -1,0 +1,50 @@
+# ✅ 2 КРОК — Покращення логування та виводу (локально)
+
+# --- Цілі ---
+# 1. Виводити важливу інформацію красиво, з позначками (emoji / tag)
+# 2. Мати окремий лог-файл (наприклад, logs/app.log)
+# 3. Замість print() — використовувати модуль logging з кольоровими або позначками
+
+# --- Крок 1: створимо лог-файл і формат ---
+import logging
+import os
+
+LOG_DIR = "logs"
+LOG_FILE = os.path.join(LOG_DIR, "app.log")
+
+os.makedirs(LOG_DIR, exist_ok=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.FileHandler(LOG_FILE),
+        logging.StreamHandler()
+    ]
+)
+
+# --- Крок 2: Приклад використання ---
+logging.info("📥 Starting data fetch...")
+logging.warning("⚠️ Rate limit approaching...")
+logging.error("❌ Failed to load model")
+
+# --- Крок 3: Замінити всі print(...) в проекті на logging.info / warning / error ---
+
+# --- Крок 4 (опційно): Можемо створити log_utils.py для коротших викликів ---
+# log_utils.py
+import logging
+
+def info(msg):
+    logging.info(f"ℹ️ {msg}")
+
+def success(msg):
+    logging.info(f"✅ {msg}")
+
+def warn(msg):
+    logging.warning(f"⚠️ {msg}")
+
+def error(msg):
+    logging.error(f"❌ {msg}")
+
+# Далі можна просто писати: from log_utils import success, error
+# success("Model trained")
